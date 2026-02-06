@@ -15,14 +15,13 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
                 {
                     GameObject obj = new GameObject();
                     obj.name = typeof(T).Name;
-                    _instance = obj.AddComponent<T>();
                 }
             }
             return _instance;
         }
     }
 
-    private void Awake()
+    public virtual void Awake()
     {
         if (_instance == null)
         {
@@ -36,6 +35,11 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         }
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoad;
+    }
+    
     protected abstract void OnSceneLoad(Scene scene, LoadSceneMode mode);
 }
 

@@ -7,17 +7,27 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject settingsPanelPrefab;
     private Canvas _canvas;
 
-    // 게임의 종류 (싱글, 듀얼)
-    private GameType _gameType;
+    // Game Logic
+    private GameLogic _gameLogic;
     
-    public override void Awake()
-    {
-        _canvas = FindAnyObjectByType<Canvas>();
-    }
+    // 게임의 종류 (싱글, 듀얼)
+    private GameType _gameType = GameType.DualPlay;
     
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
+        // 새로운 씬에서 Canvas 참조 가져오기
         _canvas = FindAnyObjectByType<Canvas>();
+
+        if (scene.name == SCENE_GAME)
+        {
+            // 게임 씬에서 블록 초기화
+            var blockController = FindAnyObjectByType<BlockController>();
+            if (blockController != null)
+                blockController.InitBlocks();
+            
+            // Game Logic 생성
+            _gameLogic = new GameLogic(_gameType, blockController);
+        }
     }
 
     // Settings 패널 열기
@@ -31,12 +41,12 @@ public class GameManager : Singleton<GameManager>
     public void ChangeToGameScene(GameType gameType)
     {
         _gameType = gameType;
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene(SCENE_GAME);
     }
 
     // 씬 전환 ( Game -> Main)
     public void ChangeToMainScene()
     {
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene(SCENE_MAIN);
     }
 }

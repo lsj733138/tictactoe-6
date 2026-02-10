@@ -9,6 +9,9 @@ public class PanelController : MonoBehaviour
     [SerializeField] private RectTransform panelTransform;
     private CanvasGroup _panelCanvasGroup;
 
+    // 패널을 숨길 때 작동할 함수를 받는 delegate
+    public delegate void PanelControllerHideDelegate();
+    
     private void Awake()
     {
         _panelCanvasGroup = GetComponent<CanvasGroup>();
@@ -27,13 +30,14 @@ public class PanelController : MonoBehaviour
     }
 
     // 팝업 숨기기
-    public void Hide()
+    public void Hide(PanelControllerHideDelegate onComplete = null)
     {
         Debug.Log("Panel off)");
 
         _panelCanvasGroup.DOFade(0, 0.3f).SetEase(Ease.Linear);
         panelTransform.DOScale(0, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
         {
+            onComplete?.Invoke();
             Destroy(gameObject);
         });
     }

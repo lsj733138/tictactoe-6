@@ -646,8 +646,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1331,6 +1331,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d531c33b260d524da09cf8c6b4cec66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerATurnPanel: {fileID: 329220520}
+  playerBTurnPanel: {fileID: 934282803}
 --- !u!1001 &925021079
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1745,6 +1747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanelPrefab: {fileID: 5838593014091041084, guid: a6ecd2dd937314546a0ea4ab7dbcb622, type: 3}
+  confirmPanelPrefab: {fileID: 0}
 --- !u!4 &1095249811
 Transform:
   m_ObjectHideFlags: 0

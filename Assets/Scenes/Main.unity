@@ -850,7 +850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanelPrefab: {fileID: 5838593014091041084, guid: a6ecd2dd937314546a0ea4ab7dbcb622, type: 3}
-  canvas: {fileID: 1647347803}
+  confirmPanelPrefab: {fileID: 5838593014091041084, guid: 03938d719670ad442b0dfc7c6bc1472a, type: 3}
 --- !u!4 &1206850010
 Transform:
   m_ObjectHideFlags: 0
@@ -1058,9 +1058,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50db1b6128734434d8d0a868fea7c501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  singlePlayButton: {fileID: 2076944618}
-  dualPlayButton: {fileID: 1818261823}
-  settingsButton: {fileID: 1837616777}
 --- !u!1 &1818261821
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,5 @@
+using System;
+using UnityEngine;
 using static Constants;
 
 public class GameLogic
@@ -7,13 +9,17 @@ public class GameLogic
     
     // 보드의 상태
     private PlayerType[,] _board;
-    
+
+    public PlayerType[,] Board => _board;
     // 플레이어 상태 변수
     public BaseState playerAState;
     public BaseState playerBState;
     
     // 현재 상태를 나타내는 변수
     private BaseState _currentState;
+    
+    // 게임의 결과             진행중, 승리, 패배, 무승부
+    public enum GameResult { None, Win, Lose, Draw }
     
     public GameLogic(GameType gameType, BlockController blockController)
     {
@@ -29,7 +35,7 @@ public class GameLogic
             case GameType.SinglePlay:
                 // 싱글 플레이어 모드 초기화 작업
                 playerAState = new PlayerState(true);
-                playerBState = new AIState();
+                playerBState = new AIState(false);
                 
                 // 초기 상태 설정 (예 : 플레이어 A부터 시작)
                 SetState(playerAState);
@@ -76,13 +82,44 @@ public class GameLogic
     }
     
     // 게임 결과 확인
-    public void CheckGameResult()
+    public GameResult CheckGameResult()
     {
         // 승리 조건 확인 로직 구현
+        if (TicTacToeAI.CheckGameWin(PlayerType.Player1, _board))
+            return GameResult.Win;
+
+        if (TicTacToeAI.CheckGameWin(PlayerType.Player2, _board))
+            return GameResult.Lose;
+
+        if (TicTacToeAI.CheckGameDraw(_board))
+            return GameResult.Draw;
+
+        return GameResult.None;
     }
 
-    public bool CheckGameWin(PlayerType playerType, PlayerType[,] board)
+    
+    
+    // 게임오버 처리
+    public void EndGame(GameResult gameResult)
     {
+        // TOD : 게임오버가 되면 "게임오버" 팝업을 띄우고, 팝업에서 확인 버튼을 누르면 Main 씬으로 전환
+        string resultStr = "";
+        switch (gameResult)
+        {
+            case GameResult.Win:
+                resultStr = "Player1 승리!";
+                break;
+            case GameResult.Lose:
+                resultStr = "Player2 승리!";
+                break;
+            case GameResult.Draw:
+                resultStr = "무승부";
+                break;
+        }
         
+        GameManager.Instance.OpenConfirmPanel(resultStr, () =>
+        {
+            GameManager.Instance.ChangeToMainScene();
+        });
     }
 }

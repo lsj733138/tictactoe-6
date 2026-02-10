@@ -5,7 +5,13 @@ using static Constants;
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private GameObject settingsPanelPrefab;
+    [SerializeField] private GameObject confirmPanelPrefab;
+    
+    // 캔버스
     private Canvas _canvas;
+    
+    // 게임 화면의 UI 컨트롤러
+    private GamePanelController _gamePanelController;
 
     // Game Logic
     private GameLogic _gameLogic;
@@ -25,6 +31,9 @@ public class GameManager : Singleton<GameManager>
             if (blockController != null)
                 blockController.InitBlocks();
             
+            // GamePanelController 참조 가져오기
+            _gamePanelController = FindAnyObjectByType<GamePanelController>();
+            
             // Game Logic 생성
             _gameLogic = new GameLogic(_gameType, blockController);
         }
@@ -35,6 +44,19 @@ public class GameManager : Singleton<GameManager>
     {
         var settingsPanelObject = Instantiate(settingsPanelPrefab, _canvas.transform);
         settingsPanelObject.GetComponent<SettingsPanelController>().Show();
+    }
+
+    // Confirm 패널 열기
+    public void OpenConfirmPanel(string message, ConfirmPanelController.OnConfirmButtonClicked onConfirmButtonClicked)
+    {
+        var confirmPanelObject = Instantiate(confirmPanelPrefab, _canvas.transform);
+        confirmPanelObject.GetComponent<ConfirmPanelController>().Show(message, onConfirmButtonClicked);
+    }
+    
+    // Game O/X UI 업데이트
+    public void SetGameTurn(PlayerType playerType)
+    {
+        _gamePanelController.SetPlayerTurnPanel(playerType);
     }
     
     // 씬 전환 ( Main -> Game)

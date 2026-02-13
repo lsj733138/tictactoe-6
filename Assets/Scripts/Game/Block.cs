@@ -15,7 +15,6 @@ public class Block : MonoBehaviour
 
     private OnBlockClicked _onBlockClicked;
     
-    
     // 블록 초기화
     public void InitMarker(int blockIndex, OnBlockClicked onBlockClicked = null)
     {
@@ -49,8 +48,7 @@ public class Block : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
-
+        
         _onBlockClicked?.Invoke(_blockIndex);
-
     }
 }

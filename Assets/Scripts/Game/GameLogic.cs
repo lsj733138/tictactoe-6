@@ -96,8 +96,6 @@ public class GameLogic
 
         return GameResult.None;
     }
-
-    
     
     // 게임오버 처리
     public void EndGame(GameResult gameResult)

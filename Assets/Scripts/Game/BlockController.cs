@@ -20,7 +20,8 @@ public class BlockController : MonoBehaviour
             });
         }
     }
-
+    
+    
     public void PlaceMarker(int blockIndex, Constants.PlayerType playerType)
     {
         switch (playerType)

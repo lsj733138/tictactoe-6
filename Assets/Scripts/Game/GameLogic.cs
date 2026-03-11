@@ -2,14 +2,13 @@ using System;
 using UnityEngine;
 using static Constants;
 
-public class GameLogic
+public class GameLogic : IDisposable
 {
     // 화면의 Block을 제어하기 위한 변수
     public BlockController blockController;
     
     // 보드의 상태
     private PlayerType[,] _board;
-
     public PlayerType[,] Board => _board;
     // 플레이어 상태 변수
     public BaseState playerAState;
@@ -17,6 +16,10 @@ public class GameLogic
     
     // 현재 상태를 나타내는 변수
     private BaseState _currentState;
+    
+    // 멀티 플레이를 처리하는 매니저
+    private MultiplayManager _multiplayManager;
+    private string _multiplayRoomId;
     
     // 게임의 결과             진행중, 승리, 패배, 무승부
     public enum GameResult { None, Win, Lose, Draw }
@@ -47,6 +50,42 @@ public class GameLogic
                 
                 // 초기 상태 설정 (예 : 플레이어 A부터 시작)
                 SetState(playerAState);
+                break;
+            case GameType.MultiPlay:
+                // TODO : 멀티 플레이어 모드 초기화 작업
+                _multiplayManager = new MultiplayManager((state, roomId) =>
+                {
+                    _multiplayRoomId = roomId;
+                    
+                    switch (state)
+                    {
+                        case MultiplayManagerState.CreateRoom:
+                            // TODO : "상대방을 기다리고 있습니다." 팝업 표시
+
+                            Debug.Log($"방 생성됨, 방 ID: " + _multiplayRoomId);
+                            break;
+                        case MultiplayManagerState.JoinRoom:
+                            playerAState = new MultiplayerState(true, _multiplayManager);
+                            playerBState = new PlayerState(false, _multiplayManager, _multiplayRoomId);
+                            SetState(playerAState);
+                            Debug.Log($"방 들어옴, 방 ID: " + _multiplayRoomId);
+                            break;
+                        case MultiplayManagerState.StartGame:
+                            playerAState = new PlayerState(true, _multiplayManager, _multiplayRoomId);
+                            playerBState = new MultiplayerState(false, _multiplayManager);
+                            SetState(playerAState);
+                            Debug.Log($"게임 시작됨, 방 ID: " + _multiplayRoomId);
+                            break;
+                        case MultiplayManagerState.ExitRoom:
+                            // TODO : "상대방이 나갔습니다." 팝업 표시
+                            Debug.Log($"상대방이 나감, 방 ID: " + _multiplayRoomId);
+                            break;
+                        case MultiplayManagerState.EndGame:
+                            // TODO : "상대방이 접속을 끊었습니다." 팝업 표시
+                            Debug.Log($"게임 종료, 방 ID: " + _multiplayRoomId);
+                            break;
+                    }
+                });
                 break;
         }
     }
@@ -119,5 +158,11 @@ public class GameLogic
         {
             GameManager.Instance.ChangeToMainScene();
         });
+    }
+
+    public void Dispose()
+    {
+        _multiplayManager?.LeaveRoom(_multiplayRoomId);
+        _multiplayManager?.Dispose();
     }
 }

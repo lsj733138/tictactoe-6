@@ -53,6 +53,12 @@ public class GameManager : Singleton<GameManager>
         confirmPanelObject.GetComponent<ConfirmPanelController>().Show(message, onConfirmButtonClicked);
     }
     
+    // Score 패널 열기
+    public void OpenScorePanel()
+    {
+        
+    }
+    
     // Game O/X UI 업데이트
     public void SetGameTurn(PlayerType playerType)
     {
@@ -69,6 +75,17 @@ public class GameManager : Singleton<GameManager>
     // 씬 전환 ( Game -> Main)
     public void ChangeToMainScene()
     {
+        _gameLogic?.Dispose();
+        _gameLogic = null;
+        
         SceneManager.LoadScene(SCENE_MAIN);
+    }
+    
+    
+    // 게임이 강제 종료되었을 때
+    private void OnApplicationQuit()
+    {
+        _gameLogic?.Dispose();
+        _gameLogic = null;
     }
 }

@@ -34,4 +34,18 @@ public class BlockController : MonoBehaviour
                 break;
         }
     }
+
+    [ContextMenu("오목판 정렬")]
+    public void SortBoard()
+    {
+        for (int i = 0; i < 225; i++)
+        {
+            int r = i / 15;
+            int c = i % 15;
+            
+            float posX = -12.6f + (c * 1.8f);
+            float posY = 12.6f - (r * 1.8f);
+            blocks[i].transform.localPosition = new Vector3(posX, posY, 0);
+        }
+    }
 }

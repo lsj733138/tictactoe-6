@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class AIState : BaseState
@@ -10,13 +9,13 @@ public class AIState : BaseState
         _playerType = isFirstPlayer ? Constants.PlayerType.Player1 : Constants.PlayerType.Player2;
     }
     
-    public override void OnEnter(GameLogic gameLogic)
+    public override async void OnEnter(GameLogic gameLogic)
     {
         // OX UI 업데이트
         GameManager.Instance.SetGameTurn(_playerType);
 
         var board = gameLogic.Board;
-        var result = TicTacToeAI.GetBestMove(board);
+        var result = await OmokAI.GetBestMove(board);
 
         if (result.HasValue)
         {

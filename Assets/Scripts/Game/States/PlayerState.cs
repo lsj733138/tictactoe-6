@@ -1,10 +1,25 @@
+using Unity.Android.Gradle.Manifest;
+
 public class PlayerState : BaseState
 {
     private Constants.PlayerType _playerType;
 
+    // 멀티 플레이 관련 변수
+    private bool _isMultiplayer;
+    private MultiplayManager _multiplayManager;
+    private string _multiplayRoomId;
+    
     public PlayerState(bool isFirstPlayer)
     {
         _playerType = isFirstPlayer ? Constants.PlayerType.Player1 : Constants.PlayerType.Player2;
+    }
+    
+    public PlayerState(bool isFirstPlayer, MultiplayManager multiplayManager, string roomId)
+    {
+        _playerType = isFirstPlayer ? Constants.PlayerType.Player1 : Constants.PlayerType.Player2;
+        _isMultiplayer = true;
+        _multiplayManager = multiplayManager;
+        _multiplayRoomId = roomId;
     }
 
     // 턴 변경
@@ -21,17 +36,35 @@ public class PlayerState : BaseState
             // 블록이 클릭되었을 때 처리할 로직
             HandleMove(gameLogic, blockIndex);
         };
-        
-        // OX UI 업데이트
-        GameManager.Instance.SetGameTurn(_playerType);
+
+        if (_isMultiplayer)
+        {
+            UnityThread.executeInUpdate(() =>
+            {
+                // OX UI 업데이트
+                GameManager.Instance.SetGameTurn(_playerType);
+            });
+        }
+        else
+        {
+            // OX UI 업데이트
+            GameManager.Instance.SetGameTurn(_playerType);
+        }
     }
 
     public override void HandleMove(GameLogic gameLogic, int index)
     {
         ProcessMove(gameLogic, index, _playerType);
+        
+        // 멀티 플레이인 경우, 상대방에게도 이동 정보 전송
+        if (_isMultiplayer)
+        {
+            _multiplayManager.SendPlayerMove(_multiplayRoomId, index);
+        }
     }
 
     public override void OnExit(GameLogic gameLogic)
     {
+        gameLogic.blockController.onBlockClicked = null;
     }
 }
